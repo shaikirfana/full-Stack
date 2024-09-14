@@ -1,0 +1,42 @@
+jsx
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+function SearchBar() {
+    const [query, setQuery] = useState('');
+    const [results, setResults] = useState([]);
+
+    useEffect(() => {
+        const fetchResults = async () => {
+            if (query.length > 2) {
+                const response = await axios.get(`/search?query=${query}`);
+                setResults(response.data);
+            } else {
+                setResults([]);
+            }
+        };
+        fetchResults();
+    }, [query]);
+
+    return (
+        <div>
+            <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search for a country"
+            />
+            {results.length > 0 && (
+                <ul>
+                    {results.map((country) => (
+                        <li key={country.name}>{country.name} ({country.capital})</li>
+                    ))}
+                </ul>
+            )}
+        </div>
+    );
+}
+
+export default SearchBar;
+
+
